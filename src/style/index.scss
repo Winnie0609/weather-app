@@ -1,0 +1,25 @@
+// $primary-color: #BA0D3E;
+
+@use 'piechart';
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.chart-text {
+  font: 14px/1.4em "Segoe UI", "Montserrat", Arial, sans-serif;
+  fill: #000;
+  transform: translateY(0.25em);
+}
+
+.chart-number {
+  font-size: 0.5em;
+  line-height: 1;
+  text-anchor: middle;
+  transform: translateY(-0.25em);
+}
