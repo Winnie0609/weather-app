@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
+import * as dayjs from 'dayjs'
 import PieChart from "./PieChart"
-// import BarChart from "./BarChart"
-// import Test from "../Test"
+import BarChart from "./BarChart"
 
 function WeatherCard() {
   const [query, setQuery] = useState('')
@@ -10,6 +10,8 @@ function WeatherCard() {
   const [multiCity, setMultiCity] = useState([])
   const [weatherData, setWeatherData] = useState([])
   const [weatherForecast, setWeatherForecast] = useState([])
+  const [barChartData, setBarChartData] = useState([])
+  const [isMinTemp, setIsMinTemp] = useState(true)
  
   const api = `https://www.metaweather.com/api/location`
   
@@ -19,7 +21,6 @@ function WeatherCard() {
 
     let formattedQuery = query.trim()
     setQuery(formattedQuery)
-    // console.log(query)
 
     if(query === "") {
       window.alert('Please Key in a City :)')
@@ -32,17 +33,13 @@ function WeatherCard() {
       setIsCityExist(true)
 
       if (data.length === 1) {
-        // console.log(data)
         setCityWoied(data[0].woeid)
 
       } else if (data.length > 1) {
-        // console.log(data)
         setMultiCity(data)
         setIsMultiCity(true)
-        // console.log('more than 1 city')
         
       } else {
-        // console.log('no city found')
         setIsCityExist(false)
       }
     }
@@ -56,6 +53,8 @@ function WeatherCard() {
   function setCityWoied(woeid) {
     getWeatherData(woeid)
     setIsMultiCity(false)
+    setIsMinTemp(true)
+    setBarChartData([])
   }
   
   async function getWeatherData(woeidID) {
@@ -63,53 +62,125 @@ function WeatherCard() {
     if (woeidID) {
       const res = await fetch(weatherDataApi)
       const data = await res.json()
+      console.log(data)
       setWeatherData(data)
       setWeatherForecast(data.consolidated_weather)
-      // console.log(data)
-      // console.log(data.consolidated_weather)
+      
+      if(weatherForecast.length > 0) {
+        getBarChartData(weatherForecast)
+      }
     }
   } 
+
+  function getBarChartData(weatherForecast) {
+    const data = weatherForecast.map((day) => {
+      return {
+        day: dayjs(day.applicable_date).format('ddd'),
+        temp: isMinTemp ? day.min_temp.toFixed(0) : day.max_temp.toFixed(0),
+        type: isMinTemp ? 'min_temp' : 'max_temp'
+      }
+    })
+    setBarChartData(data)
+    console.log(data)
+  }
 
   useEffect(() => {
     setCityWoied(2306179)
   },[])
 
+  useEffect(() => {
+    getBarChartData(weatherForecast)
+  },[isMinTemp])
+
   return (
-    <>
-      {/* <Test /> */}
-      <h1>Weather</h1>
-      <form onSubmit = {getCity}>
-        <input
-          type="text"
-          placeholder="check weather"
-          name={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        <button tyoe="submit">Search</button>
-      </form>
+    <div className="weather">
+      <div className="section_one">
+        <div className="section_one_header">
+        <span>It's</span> 
+          {weatherForecast.length > 0 ? 
+             <span>{weatherForecast[0].weather_state_name.toLowerCase()}</span> 
+             :
+             <span>light rain</span>
+          }
+          <span>in</span> 
+          <form onSubmit = {getCity}>
+            <input
+              type="text"
+              placeholder="where?"
+              spellCheck="false"
+              name={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </form>
+          <span>.</span>
+        </div>
+        {weatherData.woeid && 
+          <p className="subtitle city">{weatherData.title}, {weatherData.parent.title}</p>
+        }
+      </div>
 
       {isCityExist ?
         isMultiCity ? 
-          <>
+          <div className="country_list">
             {multiCity.map((city) => (
               <p key={city.woeid} onClick={() => setCityWoied(city.woeid)}>{city.title}</p>
             ))}
-          </>
+          </div>
           :
-            weatherData.woeid ? 
+            weatherForecast.length > 0 ? 
+            // weatherData.woeid ? 
               <>
-                <p>{weatherData.title}</p>
-                {weatherForecast.map((day) => (
-                  <div key={day.id}>
-                    <PieChart value={day.humidity}/>
-                    <p>{day.applicable_date}</p>
-                    <p>{day.humidity}</p>
-                    <p>{day.max_temp}</p>
-                    <p>{day.min_temp}</p>
-                    <p>{day.weather_state_name}</p>
-                    <hr/>
+                <div>
+                  <p className="subtitle">Today, {dayjs(weatherForecast[0].applicable_date).format("MMM DD")}</p>
+                  <div className="section_one_content">
+                    <img
+                      src={`https://www.metaweather.com/static/img/weather/${weatherForecast[0].weather_state_abbr}.svg`}
+                      alt={weatherForecast[0].weather_state_name}
+                    />
+                    <div className="section_one_temp">
+                      <p>{weatherForecast[0].the_temp.toFixed(0)}°</p>
+                      <p>{weatherForecast[0].min_temp.toFixed(0)} °/ {weatherForecast[0].max_temp.toFixed(0)}°</p>
+                    </div>
+                    
+                    <PieChart value={weatherForecast[0].humidity}  width={'20%'} height={'20%'}/>
+                    
                   </div>
-                ))}
+                </div>
+
+                <div className="line"/>
+
+                <div className="section_two">
+                  <div className="subtitle">Daily</div>
+
+                  <div className="section_two_content">
+                    {weatherForecast.slice(1,weatherForecast.length).map((day) => (
+                      <div key={day.id} className="section_two_item">
+                        <p>{dayjs(day.applicable_date).format("ddd")}</p>
+                        <img
+                          src={`https://www.metaweather.com/static/img/weather/${day.weather_state_abbr}.svg`}
+                          alt={day.weather_state_name}
+                        />
+                        <p>{day.min_temp.toFixed(0)}° / {day.max_temp.toFixed(0)}°</p>
+                        <PieChart value={day.humidity} width={'70%'} height={'70%'}/>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="line"/>
+
+                <div className="section_three">
+                  <div className="section_three_content">
+                    <p className="subtitle">Temperature of the days</p>
+                    <div>
+                      <button className={isMinTemp ? "active" : ""} onClick={() => {setIsMinTemp(true)}}><span>min</span></button>
+                      <button className={!isMinTemp ? "active" : ""} onClick={() => {setIsMinTemp(false)}}><span>max</span></button>
+                    </div>
+                  </div>
+
+                  <BarChart data={barChartData}/>
+
+                </div>
               </>
               :
               <>
@@ -121,7 +192,7 @@ function WeatherCard() {
 
       {/* <PieChart />
       <BarChart /> */}
-    </>
+    </div>
   )
 }
 

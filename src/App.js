@@ -5,7 +5,6 @@ import Weather from './component/weather'
 function App() {
   return (
     <div>
-      {/* <Test /> */}
       <Weather />
     </div>
   )
