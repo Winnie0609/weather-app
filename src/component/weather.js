@@ -45,7 +45,6 @@ function WeatherCard() {
     }
     catch(err) {
       console.error(err)
-      setQuery('taipei')
       setIsCityExist(false)
     }
   }
@@ -62,12 +61,12 @@ function WeatherCard() {
     if (woeidID) {
       const res = await fetch(weatherDataApi)
       const data = await res.json()
-      console.log(data)
+
       setWeatherData(data)
       setWeatherForecast(data.consolidated_weather)
-      
-      if(weatherForecast.length > 0) {
-        getBarChartData(weatherForecast)
+            
+      if(data.consolidated_weather.length > 0) {
+        getBarChartData(data.consolidated_weather)
       }
     }
   } 
@@ -81,11 +80,10 @@ function WeatherCard() {
       }
     })
     setBarChartData(data)
-    console.log(data)
   }
 
   useEffect(() => {
-    setCityWoied(2306179)
+    getWeatherData(2306179)
   },[])
 
   useEffect(() => {
@@ -106,7 +104,6 @@ function WeatherCard() {
           <form onSubmit = {getCity}>
             <input
               type="text"
-              placeholder="where?"
               spellCheck="false"
               name={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -128,7 +125,6 @@ function WeatherCard() {
           </div>
           :
             weatherForecast.length > 0 ? 
-            // weatherData.woeid ? 
               <>
                 <div>
                   <p className="subtitle">Today, {dayjs(weatherForecast[0].applicable_date).format("MMM DD")}</p>
@@ -150,7 +146,7 @@ function WeatherCard() {
                 <div className="line"/>
 
                 <div className="section_two">
-                  <div className="subtitle">Daily</div>
+                  <p className="subtitle">Daily</p>
 
                   <div className="section_two_content">
                     {weatherForecast.slice(1,weatherForecast.length).map((day) => (
@@ -161,7 +157,7 @@ function WeatherCard() {
                           alt={day.weather_state_name}
                         />
                         <p>{day.min_temp.toFixed(0)}° / {day.max_temp.toFixed(0)}°</p>
-                        <PieChart value={day.humidity} width={'70%'} height={'70%'}/>
+                        <PieChart value={day.humidity} width={'50%'} height={'50%'}/>
                       </div>
                     ))}
                   </div>
@@ -183,15 +179,12 @@ function WeatherCard() {
                 </div>
               </>
               :
-              <>
-                Loading...
-              </>
+              <div className="loading">
+                <p>Loading...</p>
+              </div>
         :
-        <h1>City not Found</h1>
+        <p className="city-not-found">City not found. Maybe you can find another beautiful city.</p>
       }
-
-      {/* <PieChart />
-      <BarChart /> */}
     </div>
   )
 }

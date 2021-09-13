@@ -1,14 +1,13 @@
 import React from 'react';
 import '../style/index.css';
 
-function Test({data}) {
-  // console.log(data)
+function Barchart({data}) {
 
   const temp = data
   const maxHeight = 200
   const chartHeight = maxHeight + 20
-  const barWidth = 50
-  const barMargin = 30
+  const barWidth = 10
+  const barMargin = 70
   const numberofBars = temp.length
   let width = numberofBars * (barWidth + barMargin)
 
@@ -16,12 +15,10 @@ function Test({data}) {
     <>
       <Chart height={chartHeight} width={width} data={data}>
         {temp.map((data, index) => {
-          const barHeight = data.temp * 3;
-          // const barHeight = data.temp;
+          const barHeight = data.temp * 5;
           return (
             <Bar
               key={index}
-              // key={data.name}
               x={index * (barWidth + barMargin)}
               y={chartHeight - barHeight}
               width={barWidth}
@@ -36,17 +33,17 @@ function Test({data}) {
   );
 }
 
-const Chart = ({ children, width, height, data }) => (
+const Chart = ({ children, width, data }) => (
   <svg
-    // viewBox={`0 0 ${width} ${height}`}   
     viewBox={`0 0 ${width} 270`}   
     width="100%"
     height="70%"
     preserveAspectRatio="xMidYMax meet"
+    className="barchart"
   >
-    <g className="x axis" transform="translate(5, -150)">
+    <g className="x axis" transform="translate(-10, -150)">
       {data.map((day, index) => (
-        <text key={index} x={80 * index} y="400">{day.day}</text>
+        <text key={index} x={81 * index} y="400">{day.day}</text>
       ))}
     </g>
     {children}
@@ -55,11 +52,11 @@ const Chart = ({ children, width, height, data }) => (
 
 const Bar = ({ x, y, width, height, temp }) => (
   <>
-    <rect x={x} y={y} width={width} height={height} fill="black"/> 
-    <text x={x + width / 3} y={y - 5}>
-        {temp}
+    <rect x={x} y={y} width={width} height={height} rx="5" fill="#5773FF"/> 
+    <text x={x + width / 3} y={y - 20}>
+        {temp}°
     </text>
   </>
 )
 
-export default Test
+export default Barchart

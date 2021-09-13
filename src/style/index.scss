@@ -1,14 +1,11 @@
 @use 'piechart';
+@use 'barchart';
 
-@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@200;300;400;500;600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Catamaran:wght@200;400;500;600&family=Heebo:wght@200;300;400;500;600&display=swap');
 
-// $primary-color: #BA0D3E;
-$font-size-header: 2rem;
-$font-size-subtitle: 1.2rem;
-$primary-color: #000000;
-$secondary-color: red;
+$font-size-header: 32px;
+$font-size-subtitle: 20px;
+$primary-color: #5773FF;
 $grey: #C4C4C4;
 
 body {
@@ -32,16 +29,20 @@ body {
   margin: 30px 0; 
 }
 
-// country list
+.loading,
+.city-not-found {
+  font-size: $font-size-subtitle;
+  text-align: center;
+}
 
+// country list
 .country_list {
   margin-top: 50px;
   text-align: center;
   cursor: pointer;
   
   :hover {
-    color: white;
-    background-color: #000000;
+    color: $primary-color;
   }
 
   p {
@@ -55,10 +56,12 @@ body {
     font-size: 1.4rem;
     font-weight: 500;
     text-align: center;
+    margin-top: 3em;
   }
 
   .section_one_header {
     display: flex;
+    flex-wrap: wrap;
     align-items: flex-end;
     justify-content: center;
     font-size: $font-size-header;
@@ -81,13 +84,12 @@ body {
 }
 
 .section_one_content {
-  // max-width: 90%;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
 
   img {
-    width: 4.5em;
+    width: 72px;
   }
 
   .section_one_temp {
@@ -99,7 +101,7 @@ body {
       margin: 0;
 
       &:first-child {
-        font-size: 4rem;
+        font-size: 2rem;
       }
     }
   }
@@ -115,28 +117,26 @@ body {
       flex-direction: column;
       align-items: center;
       min-width: 100px;
-      margin-bottom: 10px;
+      margin-bottom: 30px;
 
       img {
-        width: 2.5rem;
+        width: 40px;
       }
     }
   }
   ::-webkit-scrollbar {
-    height: 7px;
+    height: 5px;
     background-color: #ffffff;
   }
 
   ::-webkit-scrollbar-track {
       border-radius: 10px;
-      background-color: #000000;
-      background-color: #C4C4C4;
+      background-color: #EFF7FE;
     }
     
     ::-webkit-scrollbar-thumb {
       border-radius:10px;
-      background-color: #C4C4C4;
-      background-color: #000000;
+      background-color: #9EADF5;
   }
 }
 
@@ -160,17 +160,42 @@ body {
     
     button:hover {
       background-color: $primary-color;
+      border-color: $primary-color;
       color: white;
     }
 
     .active {
       background-color: $primary-color;
+      border-color: $primary-color;
       color: white;
     }
   }
 }
 
-@media only screen and (max-width: 850px) {
+@media only screen and (max-width: 310px) {
+  .section_one_content {
+    flex-direction: column;
+
+    img {
+      width: 40px;
+    }
+  }
+}
+
+@media only screen and (max-width: 450px) {
+  .section_three {
+    .section_three_content {
+      flex-direction: column;
+      align-items: flex-start;
+
+      .subtitle {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 900px) {
   .weather {
     width: 85%;
   }
