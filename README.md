@@ -6,7 +6,7 @@ A weather app built with React.
 
 ## Configuration
 * [Meta Weather API](https://www.metaweather.com/api/)  
-* [Moesif Origin & CORS Changer](https://chrome.google.com/webstore/detail/moesif-origin-cors-change/digfbfaphojjndkpccljibejjbppifbc)
+* [Moesif Origin & CORS Changer](https://chrome.google.com/webstore/detail/moesif-origin-cors-change/digfbfaphojjndkpccljibejjbppifbc) is needed to skip CORS problem.
 
 ## Feature
 * User can enter the location.  
